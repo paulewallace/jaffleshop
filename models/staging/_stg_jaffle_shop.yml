@@ -2,29 +2,32 @@ version: 2
 
 models:
   - name: stg_jaffle_shop__customers
-    description: the grain of this table 1 unique customer per row
+    description: One row per customer from the `jaffle_shop.customers` source, with renamed fields for consistent downstream use.
     columns:
       - name: customer_id
-        description: Primary key for the customers table
+        description: Primary key for the customer.
         data_tests:
           - unique
           - not_null
       - name: first_name
+        description: Customer's first name.
         data_tests:
           - not_null
       - name: last_name
+        description: Customer's last name.
         data_tests:
           - not_null
 
   - name: stg_jaffle_shop__orders
-    description: One order per row
+    description: One row per order from the `jaffle_shop.orders` source, with renamed fields for consistent downstream use.
     columns:
       - name: order_id
-        description: primary key for the orders table
+        description: Primary key for the order.
         data_tests:
           - unique
           - not_null
       - name: customer_id
+        description: Foreign key to the customer who placed the order.
         data_tests:
           - not_null
           - relationships:
@@ -32,10 +35,11 @@ models:
                 field: customer_id
                 to: ref('stg_jaffle_shop__customers')
       - name: order_date
+        description: Date the order was placed.
         data_tests:
           - not_null
       - name: order_status
-        description: "{{ doc('order_status')}}"
+        description: "{{ doc('order_status') }}"
         data_tests:
           - not_null
           - accepted_values:
