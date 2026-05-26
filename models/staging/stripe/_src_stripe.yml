@@ -13,3 +13,43 @@ sources:
       loaded_at_field: _batched_at
     tables:
       - name: payment
+
+models:
+  - name: stg_stripe__payments
+    description: One row per payment record from the `stripe.payment` source, with renamed fields for consistent downstream use.
+    columns:
+      - name: payment_id
+        description: Primary key for the payment record.
+        data_tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: Foreign key to the order associated with the payment.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                field: order_id
+                to: ref('stg_jaffle_shop__orders')
+      - name: payment_method
+        description: Payment method used for the transaction.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['bank_transfer', 'coupon', 'credit_card', 'gift_card']
+      - name: payment_status
+        description: Status of the payment transaction.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['fail', 'success']
+      - name: payment_amount
+        description: Payment amount in dollars, converted from the source value stored in cents.
+        data_tests:
+          - not_null
+      - name: created_at
+        description: Timestamp when the payment record was created.
+        data_tests:
+          - not_null
