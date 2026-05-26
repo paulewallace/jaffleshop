@@ -1,26 +1,30 @@
-WITH payment as (
-    SELECT 
-        order_id
-        , amount 
-    FROM 
-        {{ ref('stg_stripe__payments') }}
+with orders as  (
+    select * from {{ ref ('stg_jaffle_shop__orders' )}}
 ),
 
-orders as (
-    SELECT 
-        order_id
-        , customer_id
-    FROM 
-        {{ ref('stg_jaffle_shop__orders') }}
-    WHERE 
-        status = 'completed'
+payments as (
+    select * from {{ ref ('stg_stripe__payments') }}
+),
+
+order_payments as (
+    select
+        order_id,
+        sum (case when payment_status = 'success' then payment_amount end) as amount
+
+    from payments
+    group by 1
+),
+
+ final as (
+
+    select
+        orders.order_id,
+        orders.customer_id,
+        orders.order_date,
+        coalesce (order_payments.amount, 0) as amount
+
+    from orders
+    left join order_payments using (order_id)
 )
 
-SELECT 
-    order_id
-    , customer_id
-    , amount    
-FROM
-    payment 
-INNER JOIN 
-    orders using (order_id)
+select * from final
