@@ -1,7 +1,7 @@
 WITH payment as (
     SELECT 
         order_id
-        , amount
+        , amount 
     FROM 
         {{ ref('stg_stripe__payments') }}
 ),
