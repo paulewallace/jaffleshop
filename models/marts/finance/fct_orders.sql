@@ -12,6 +12,8 @@ orders as (
         , customer_id
     FROM 
         {{ ref('stg_jaffle_shop__orders') }}
+    WHERE 
+        status = 'completed'
 )
 
 SELECT 
