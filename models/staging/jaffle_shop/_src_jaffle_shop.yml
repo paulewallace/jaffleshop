@@ -14,8 +14,18 @@ sources:
 
     tables:
       - name: customers
+        columns:
+          - name: id
+            tests:
+              - unique
+              - not_null
         # Nesting under config correctly overrides the source-level config
         config:
           freshness: null  
       - name: orders
-
+        columns: 
+          - name: id
+            tests:
+              - unique
+              - not_null
+                
