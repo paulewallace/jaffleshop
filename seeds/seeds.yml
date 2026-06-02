@@ -1,0 +1,12 @@
+version: 2
+
+seeds:
+  - name: employees
+    description: a csv mapper customer_id to employee_id w/ email included...s
+    columns: 
+      - name: employee_id
+      - name: email
+      - name: customer_id
+        tests:
+         - unique
+         - not_null
